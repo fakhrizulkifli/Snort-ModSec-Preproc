@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #### Snort Preprocessor to parse ModSecurity Core RuleSet
 A Proof-of-Concept project started to turn ModSecurity into sniffer mode and with Snort Inline capability to drop packet once the packet matches with the attack signatures. Therefore, the payload should not be able to get to the target and reaching to the 5th layer and above. (Isn't it?)
 
@@ -28,6 +27,3 @@ GPLv2 License. Copyright (c) 2015 Fakhri Zulkifli. See [License](https://github.
 #### Contact
 
 mohdfakhrizulkifli at gmail dot com
-=======
-# Snort-ModSec-Preproc
->>>>>>> b1d9b93c15f902c47f8df872fefc0b1046e4667a
