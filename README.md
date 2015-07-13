@@ -1,4 +1,4 @@
-#### Snort Preprocessor to parse ModSecurity Core RuleSet
+#### Modified Http Inspect Preprocessor to parse ModSec Core Rule Set
 A Proof-of-Concept project started to turn ModSecurity into sniffer mode and with Snort Inline capability to drop packet once the packet matches with the attack signatures. Therefore, the payload should not be able to get to the target and reaching to the 5th layer and above. (Isn't it?)
 
 ###### Warning: Under active development, currently unstable version.
@@ -9,7 +9,6 @@ The installation procedure is the usual one:
 $ make
 $ make install -- you may need sudo
 ```
-The module binaries should be placed in $SNORT_DIR/lib/snort_dynamicpreprocessor after the installation,and automatically loaded by Snort at the next start.
 
 #### TODO:
 1. Looking for collaboration
