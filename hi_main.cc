@@ -58,7 +58,6 @@
 #include <sys/types.h>
 #include <limits.h>
 #include <ctype.h>
-#include "urldecode.h"
 
 #include "detect.h"
 #include "protocols/packet.h"
@@ -1277,6 +1276,8 @@ int GetHttpJSNormData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
  *
  */
 
+#include "urldecode.h"
+
 /* Function: urlDecode */
 char *urlDecode(const char *str) {
     int d = 0; /* whether or not the string is decoded */
@@ -1798,7 +1799,7 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
                        request, strlen(request), caps, 4, 0) > 0) {
             printf("Method: [%.*s], URI: [%.*s]\n",
                    caps[0].len, caps[0].ptr,
-                   caps[2].len, caps[2].ptr);
+                   caps[1].len, caps[1].ptr);
         } else {
             printf("Error parsing [%s]\n", request);
         }
