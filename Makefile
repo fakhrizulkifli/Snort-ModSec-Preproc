@@ -355,8 +355,8 @@ top_srcdir = ../../..
 AUTOMAKE_OPTIONS = foreign no-dependencies
 file_list = \
 http_inspect.cc \
-urldecode.c urldecode.h \
 hi_main.cc hi_main.h \
+urldecode.c urldecode.h \
 hi_ad.cc hi_ad.h \
 hi_client.cc hi_client.h \
 hi_client_norm.cc hi_client_norm.h \
