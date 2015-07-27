@@ -1327,27 +1327,33 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
 {
     HttpSessionData* hsd = NULL;
 
+    // FILE *fp;
+    // char *line = NULL;
+    // size_t len = 0;
+    // ssize_t read;
+
     char str[BUFSIZ];
 
     /* REGEX start */
-    char pattern[81];
+    //char pattern[81];
     char strmatch[BUFSIZ];
     char matchedstr[81];
     regex_t v;
 
     regmatch_t matches[MAXMATCH];
     int status;
-    int i;
-    int numchars;
 
-    //char reg[] = "<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>[\\s\\S]*?<\\/script[[\\s\\S]]*[\\s\\S]|<script[^>]*>[\\s\\S]*?<\\/script[\\s]*[\\s]|<script[^>]*>[\\s\\S]*?<\\/script|<script[^>]*>[\\s\\S]*?";
+    /* Fixed: strdup -- malloc and strcpy */
+    char *pattern = strdup("<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>[\\s\\S]*?<\\/script[[\\s\\S]]*[\\s\\S]|<script[^>]*>[\\s\\S]*?<\\/script[\\s]*[\\s]|<script[^>]*>[\\s\\S]*?<\\/script|<script[^>]*>[\\s\\S]*?");
     //char reg[BUFSIZ] = "[\\s\\\"'`;\\/0-9\\=]+on\\w+\\s*=";
-    //char reg[BUFSIZ] = "<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>[\\s\\S]*?<\\/script[[\\s\\S]]";   // Max buffer space
-    char reg[BUFSIZ] = "<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>";
-    strcpy(pattern, reg);   
+    //char reg[] = "<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>[\\s\\S]*?<\\/script[[\\s\\S]]";   // Max buffer space
+    //char reg[BUFSIZ] = "<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>";
+    printf("MAX BUFFER SIZE:%i\n", BUFSIZ);
+    //strcpy(pattern, reg);   // Fixed: This is where snort detected buffer overflows  
     // printf("PATTERN: ");
     // fgets(pattern,BUFSIZ,stdin);
     pattern[strlen(pattern)-1] = '\0';
+    printf("PATTERN: %s\n",pattern);
 
     status = regcomp(&v,pattern,REG_EXTENDED);
     if (status == 0)
@@ -1378,7 +1384,7 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
         //printf("%s\n", str);
         printf("Decoded Http Uri Data:%s\n", x);
         //const char *request = " GET /index.html?id=<script>alert(document.domain)</script> HTTP/1.0\r\n\r\n";
-        strcpy(strmatch, x); printf("WALDO IS HERE!\n");  // Fixed: This is why snort is keep crashing
+        strcpy(strmatch, x); printf("Packet Filtered!\n");  // Fixed: This is why snort is keep crashing
         strmatch[strlen(strmatch)-1] = '\0';
         if (strlen(strmatch) < 1) return 1;
 
