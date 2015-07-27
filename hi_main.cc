@@ -1342,6 +1342,7 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
 
     //char reg[] = "<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>[\\s\\S]*?<\\/script[[\\s\\S]]*[\\s\\S]|<script[^>]*>[\\s\\S]*?<\\/script[\\s]*[\\s]|<script[^>]*>[\\s\\S]*?<\\/script|<script[^>]*>[\\s\\S]*?";
     //char reg[BUFSIZ] = "[\\s\\\"'`;\\/0-9\\=]+on\\w+\\s*=";
+    //char reg[BUFSIZ] = "<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>[\\s\\S]*?<\\/script[[\\s\\S]]";   // Max buffer space
     char reg[BUFSIZ] = "<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>";
     strcpy(pattern, reg);   
     // printf("PATTERN: ");
@@ -1377,7 +1378,7 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
         //printf("%s\n", str);
         printf("Decoded Http Uri Data:%s\n", x);
         //const char *request = " GET /index.html?id=<script>alert(document.domain)</script> HTTP/1.0\r\n\r\n";
-        strcpy(strmatch, x); printf("WALDO IS HERE!\n");  // This is why snort is keep crashing
+        strcpy(strmatch, x); printf("WALDO IS HERE!\n");  // Fixed: This is why snort is keep crashing
         strmatch[strlen(strmatch)-1] = '\0';
         if (strlen(strmatch) < 1) return 1;
 
