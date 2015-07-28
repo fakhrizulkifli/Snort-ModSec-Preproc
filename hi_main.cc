@@ -1321,16 +1321,23 @@ char *urlDecode(const char *str) {
 }
 
 #include <regex.h>
+//#include <unistd.h>
+
 #define MAXMATCH 20
 
 int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
 {
     HttpSessionData* hsd = NULL;
 
-    // FILE *fp;
-    // char *line = NULL;
-    // size_t len = 0;
-    // ssize_t read;
+    // char cwd[1024];
+    // if(getcwd(cwd, sizeof(cwd)) != NULL)
+    //     printf("CWD: %s\n",cwd);
+    // else
+    //     printf("Can't get current working directory\n");
+    // return 0;
+
+    FILE *fp;
+    char line_file[1000];
 
     char str[BUFSIZ];
 
@@ -1344,27 +1351,32 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
     int status;
 
     /* Fixed: strdup -- malloc and strcpy */
-    char *pattern = strdup("<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>[\\s\\S]*?<\\/script[[\\s\\S]]*[\\s\\S]|<script[^>]*>[\\s\\S]*?<\\/script[\\s]*[\\s]|<script[^>]*>[\\s\\S]*?<\\/script|<script[^>]*>[\\s\\S]*?");
+    //char *pattern = strdup("<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>[\\s\\S]*?<\\/script[[\\s\\S]]*[\\s\\S]|<script[^>]*>[\\s\\S]*?<\\/script[\\s]*[\\s]|<script[^>]*>[\\s\\S]*?<\\/script|<script[^>]*>[\\s\\S]*?");
     //char reg[BUFSIZ] = "[\\s\\\"'`;\\/0-9\\=]+on\\w+\\s*=";
     //char reg[] = "<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>[\\s\\S]*?<\\/script[[\\s\\S]]";   // Max buffer space
     //char reg[BUFSIZ] = "<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>";
     printf("MAX BUFFER SIZE:%i\n", BUFSIZ);
-    //strcpy(pattern, reg);   // Fixed: This is where snort detected buffer overflows  
+    //strcpy(pattern, reg);   // Fixed: This is where snort detected buffer overflows
     // printf("PATTERN: ");
     // fgets(pattern,BUFSIZ,stdin);
-    pattern[strlen(pattern)-1] = '\0';
-    printf("PATTERN: %s\n",pattern);
+    //pattern[strlen(pattern)-1] = '\0';
+    //printf("PATTERN: %s\n",pattern);
 
-    status = regcomp(&v,pattern,REG_EXTENDED);
-    if (status == 0)
-    {
-        printf("Pattern is valid\n");
-    } else {
-        printf("Pattern is not valid\n");
-    }
+    // status = regcomp(&v,pattern,REG_EXTENDED);
+    // if (status == 0)
+    // {
+    //     printf("Pattern is valid\n");
+    // } else {
+    //     printf("Pattern is not valid\n");
+    // }
     /* REGEX end */
 
-    if (status) return 1;
+    //if (status) return 1;
+
+    /* Read rule */
+    fp = fopen("rule.conf", "r");
+    if (!fp)
+        return 1;
 
     if (flow == NULL)
         return 0;
@@ -1384,18 +1396,46 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
         //printf("%s\n", str);
         printf("Decoded Http Uri Data:%s\n", x);
         //const char *request = " GET /index.html?id=<script>alert(document.domain)</script> HTTP/1.0\r\n\r\n";
-        strcpy(strmatch, x); printf("Packet Filtered!\n");  // Fixed: This is why snort is keep crashing
-        strmatch[strlen(strmatch)-1] = '\0';
-        if (strlen(strmatch) < 1) return 1;
+        //strcpy(strmatch, x); printf("Packet Filtered!\n");  // Fixed: This is why snort is keep crashing
 
-        status = regexec(&v,strmatch,MAXMATCH,matches,0);
-        if (status == 0)
+        int i;
+        for(i = 0; x[i]; ++i)
         {
-            printf("XSS Injection found!\n");
+            x[i] = tolower(x[i]);
         }
-        
-        regfree(&v);
-        return 0;
+        printf("Lower case: %s\n",x);
+        strcpy(strmatch, x);
+        printf("Packet Filtered!\n");
+
+        while(fgets(line_file,1000,fp) != NULL)
+        {
+            /* Multithread (?) */
+            printf("PATTERN: %s",line_file);
+            char *pattern = strdup(line_file);
+            pattern[strlen(pattern)-1] = '\0';
+
+            status = regcomp(&v,pattern,REG_EXTENDED);
+            printf("Validity of regex (0 => OK): %d\n",status);
+            
+            if (status) 
+            {
+                printf("Pattern is not valid!\n"); 
+                return 1;
+            }
+            
+            strmatch[strlen(strmatch)-1] = '\0';
+            if (strlen(strmatch) < 1) return 1;
+            
+            status = regexec(&v,strmatch,MAXMATCH,matches,0);
+            if (status == 0)
+            {
+                printf("XSS Injection found!\n");
+                return 0;
+            }
+
+            regfree(&v);
+            //return 0;
+        }
 
         *len = hsd->log_state->uri_bytes;
         printf("Http Uri Bytes:%i\n", *len);
