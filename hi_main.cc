@@ -1377,7 +1377,7 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
     fp = fopen("rule.conf", "r");
     if (!fp)
     {
-        printf("Can't open file\nPlease make sure the rule is in the current working directory.\n"); 
+        printf("Can't open file\nPlease make sure the rule configuration file is in the current working directory.\n"); 
         return 1;
     }
 
