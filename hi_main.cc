@@ -1376,7 +1376,10 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
     /* Read rule */
     fp = fopen("rule.conf", "r");
     if (!fp)
+    {
+        printf("Can't open file\nPlease make sure the rule is in the current working directory.\n"); 
         return 1;
+    }
 
     if (flow == NULL)
         return 0;
@@ -1443,6 +1446,7 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
         return 1;
     }
 
+    fclose(fp);
     return 0;
 }
 /* ModSecurity CRS codes ended here. */
