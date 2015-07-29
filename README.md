@@ -8,6 +8,7 @@ The installation procedure is the usual one:
 ```Bash
 $ make
 $ make install -- you may need sudo
+$ sudo snort -c snort.lua -A fast
 ```
 
 #### TODO:
@@ -16,7 +17,7 @@ $ make install -- you may need sudo
     - Build the CRS parser
     - Trigger Snort Inline capability
 
-2. Documentation (?)
+2. Documentations (?)
 3. Any suggestions (?)
 
 #### License
