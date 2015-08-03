@@ -1321,20 +1321,12 @@ char *urlDecode(const char *str) {
 }
 
 #include <regex.h>
-//#include <unistd.h>
 
 #define MAXMATCH 20
 
 int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
 {
     HttpSessionData* hsd = NULL;
-
-    // char cwd[1024];
-    // if(getcwd(cwd, sizeof(cwd)) != NULL)
-    //     printf("CWD: %s\n",cwd);
-    // else
-    //     printf("Can't get current working directory\n");
-    // return 0;
 
     FILE *fp;
     char line_file[1000];
@@ -1350,28 +1342,8 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
     regmatch_t matches[MAXMATCH];
     int status;
 
-    /* Fixed: strdup -- malloc and strcpy */
-    //char *pattern = strdup("<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>[\\s\\S]*?<\\/script[[\\s\\S]]*[\\s\\S]|<script[^>]*>[\\s\\S]*?<\\/script[\\s]*[\\s]|<script[^>]*>[\\s\\S]*?<\\/script|<script[^>]*>[\\s\\S]*?");
-    //char reg[BUFSIZ] = "[\\s\\\"'`;\\/0-9\\=]+on\\w+\\s*=";
-    //char reg[] = "<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>[\\s\\S]*?<\\/script[[\\s\\S]]";   // Max buffer space
-    //char reg[BUFSIZ] = "<script[^>]*>[\\s\\S]*?<\\/script[^>]*>|<script[^>]*>";
     printf("MAX BUFFER SIZE:%i\n", BUFSIZ);
-    //strcpy(pattern, reg);   // Fixed: This is where snort detected buffer overflows
-    // printf("PATTERN: ");
-    // fgets(pattern,BUFSIZ,stdin);
-    //pattern[strlen(pattern)-1] = '\0';
-    //printf("PATTERN: %s\n",pattern);
-
-    // status = regcomp(&v,pattern,REG_EXTENDED);
-    // if (status == 0)
-    // {
-    //     printf("Pattern is valid\n");
-    // } else {
-    //     printf("Pattern is not valid\n");
-    // }
     /* REGEX end */
-
-    //if (status) return 1;
 
     /* Read rule */
     fp = fopen("rule.conf", "r");
@@ -1392,14 +1364,9 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
     if (hsd->log_state && hsd->log_state->uri_bytes > 0)
     {
         *buf = hsd->log_state->uri_extracted;
-        //printf("Raw Http Uri Data:%s\n",*buf);
         memcpy(&str, *buf, 100 * sizeof(*buf));     // HotFix: to change uint8_t to string data type
-        //printf("%s\n", str);
         char *x = urlDecode(str);
-        //printf("%s\n", str);
         printf("Decoded Http Uri Data:%s\n", x);
-        //const char *request = " GET /index.html?id=<script>alert(document.domain)</script> HTTP/1.0\r\n\r\n";
-        //strcpy(strmatch, x); printf("Packet Filtered!\n");  // Fixed: This is why snort is keep crashing
 
         int i;
         for(i = 0; x[i]; ++i)
@@ -1440,7 +1407,6 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
             }
 
             regfree(&v);
-            //return 0;
         }
 
         *len = hsd->log_state->uri_bytes;
