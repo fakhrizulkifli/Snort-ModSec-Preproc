@@ -1324,6 +1324,13 @@ char *urlDecode(const char *str) {
 
 #define MAXMATCH 20
 
+/*
+ * TODO: Pass the http packet to the ModSecurity engine.
+ *
+ * 
+ *
+ */
+
 int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
 {
     HttpSessionData* hsd = NULL;
@@ -1340,7 +1347,7 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
     regex_t v;
 
     regmatch_t matches[MAXMATCH];
-    int status;
+    signed int status;
 
     printf("MAX BUFFER SIZE:%i\n", BUFSIZ);
     /* REGEX end */
