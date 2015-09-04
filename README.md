@@ -12,9 +12,10 @@ $ sudo snort -c snort.lua -A fast -i <interface>
 ```
 
 #### TODO:
-1. Looking for collaboration
+1. Looking for collaboration:
     - To port libmodsecurity into the preprocessor.
     - Trigger Snort Inline capability.
+    - Logging features (for out-of-the-line deployment).
 
 2. Documentations (?)
 3. Any suggestions (?)
