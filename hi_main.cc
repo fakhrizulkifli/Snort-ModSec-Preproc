@@ -1272,11 +1272,15 @@ int GetHttpJSNormData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
 /*
  * All codes starting from below is used for ModSecurity CRS
  *
- * Fakhri Zulkifli
+ * Copyright (c) 2015 Fakhri Zulkifli
+ *
+ * mohdfakhrizulkifli at gmail dot com
  *
  */
-
+#include <regex.h>
 #include "urldecode.h"
+
+#define MAXMATCH 20
 
 /* Function: urlDecode */
 char *urlDecode(const char *str) {
@@ -1320,14 +1324,10 @@ char *urlDecode(const char *str) {
     return dStr;
 }
 
-#include <regex.h>
-
-#define MAXMATCH 20
-
 /*
  * TODO: Pass the http packet to the ModSecurity engine.
  *
- * 
+ * FIX: use https://github.com/client9/libinjection/ 
  *
  */
 
