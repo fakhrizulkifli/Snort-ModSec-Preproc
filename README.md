@@ -8,14 +8,13 @@ The installation procedure is the usual one:
 ```Bash
 $ make
 $ make install -- you may need sudo
-$ sudo snort -c snort.lua -A fast
+$ sudo snort -c snort.lua -A fast -i <interface>
 ```
 
 #### TODO:
 1. Looking for collaboration
-    - To port the ModSecurity Engine into the preprocessor
-    - Build the CRS parser
-    - Trigger Snort Inline capability
+    - To port libmodsecurity into the preprocessor.
+    - Trigger Snort Inline capability.
 
 2. Documentations (?)
 3. Any suggestions (?)
