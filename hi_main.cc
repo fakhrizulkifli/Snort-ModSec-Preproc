@@ -1335,10 +1335,8 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
 {
     HttpSessionData* hsd = NULL;
 
-    FILE *fp;
     char line_file[1000];
-
-    char str[BUFSIZ];
+    char *str = (char *) malloc(sizeof(char));
 
     /* REGEX start */
     //char pattern[81];
@@ -1353,10 +1351,10 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
     /* REGEX end */
 
     /* Read rule */
-    fp = fopen("rule.conf", "r");
+    FILE *fp = fopen("rule.conf", "r");
     if (!fp)
     {
-        printf("Can't open file\nPlease make sure the rule configuration file is in the current working directory.\n"); 
+        perror("Please make sure the rule configuration file is in the current working directory.\nCan't open file"); 
         return 1;
     }
 
@@ -1371,7 +1369,7 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
     if (hsd->log_state && hsd->log_state->uri_bytes > 0)
     {
         *buf = hsd->log_state->uri_extracted;
-        memcpy(&str, *buf, 100 * sizeof(*buf));     // HotFix: to change uint8_t to string data type
+        memcpy(&str, *buf, (size_t) sizeof(str));     // HotFix: to change uint8_t to string data type
         char *x = urlDecode(str);
         printf("Decoded Http Uri Data:%s\n", x);
 
@@ -1381,7 +1379,7 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
             x[i] = tolower(x[i]);
         }
         printf("Lower case: %s\n",x);
-        strcpy(strmatch, x);
+        strncpy(strmatch, x, (size_t) sizeof(strmatch));
         printf("Packet Filtered!\n");
 
         while(fgets(line_file,1000,fp) != NULL)
@@ -1416,6 +1414,7 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
             regfree(&v);
         }
 
+        free(str);
         *len = hsd->log_state->uri_bytes;
         printf("Http Uri Bytes:%i\n", *len);
         *type = EVENT_INFO_HTTP_URI;
