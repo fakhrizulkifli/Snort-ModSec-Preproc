@@ -1414,13 +1414,13 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
             regfree(&v);
         }
 
-        free(str);
         *len = hsd->log_state->uri_bytes;
         printf("Http Uri Bytes:%i\n", *len);
         *type = EVENT_INFO_HTTP_URI;
         return 1;
     }
 
+    free(str);
     fclose(fp);
     return 0;
 }
