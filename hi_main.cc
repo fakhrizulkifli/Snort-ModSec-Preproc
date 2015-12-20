@@ -1355,16 +1355,24 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
     if (!fp)
     {
         perror("Please make sure the rule configuration file is in the current working directory.\nCan't open file"); 
+        free(str);
+        fclose(fp);
         return 1;
     }
 
     if (flow == NULL)
+    {
+        free(str);
         return 0;
+    }
 
     hsd = get_session_data(flow);
 
     if (hsd == NULL)
+    {
+        free(str);
         return 0;
+    }
 
     if (hsd->log_state && hsd->log_state->uri_bytes > 0)
     {
@@ -1395,11 +1403,16 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
             if (status) 
             {
                 printf("Pattern is not valid!\n"); 
+                free(pattern);
                 return 1;
             }
             
             strmatch[strlen(strmatch)-1] = '\0';
-            if (strlen(strmatch) < 1) return 1;
+            if (strlen(strmatch) < 1) 
+            {
+                free(pattern);
+                return 1;
+            }
             
             status = regexec(&v,strmatch,MAXMATCH,matches,0);
             if (status == 0)
@@ -1408,6 +1421,7 @@ int GetHttpUriData(Flow* flow, uint8_t** buf, uint32_t* len, uint32_t* type)
                 *len = hsd->log_state->uri_bytes;
                 printf("Http Uri Bytes:%i\n", *len);
                 *type = EVENT_INFO_HTTP_URI;
+                free(pattern);
                 return 0;
             }
 
