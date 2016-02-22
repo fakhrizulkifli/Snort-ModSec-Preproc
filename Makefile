@@ -121,7 +121,7 @@ libsf_modsecurity_preproc_la_LIBADD =
 nodist_libsf_modsecurity_preproc_la_OBJECTS =  \
 	sf_dynamic_preproc_lib.lo sfPolicyUserData.lo
 libsf_modsecurity_preproc_la_OBJECTS =  \
-	spp_modsecurity.o
+	spp_modsecurity.lo
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent

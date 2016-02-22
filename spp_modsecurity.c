@@ -63,7 +63,7 @@ const char *PREPROC_NAME = "SF_MODSECURITY";
 
 /* Preprocessor config objects */
 static tSfPolicyUserContextId modsecurity_context_id = NULL;
-static modsecurity_config_t *modsecurity_eval_config = NULL;
+//static modsecurity_config_t *modsecurity_eval_config = NULL;
 
 /* Target-based app ID */
 #ifdef TARGET_BASED
@@ -72,7 +72,6 @@ int16_t modsecurity_app_id = SFTARGET_UNKNOWN_PROTOCOL;
 
 /* Func Prototypes */
 static void ModsecurityInit(struct _SnortConfig *, char *);
-static inline modsecurity_config_t * ModsecurityPerPolicyInit(struct _SnortConfig *, tSfPolicyUserContextId);
 static void ModsecurityProcess(void *, void *);
 static modsecurity_config_t *ModsecurityParse(char *);
 
@@ -112,6 +111,7 @@ static void ModsecurityInit(struct _SnortConfig *sc, char *args)
     sfPolicyUserPolicySet(modsecurity_context_id, policy_id);
     sfPolicyUserDataSetCurrent(modsecurity_context_id, config);
 
+    _dpd.addPreproc(sc, ModsecurityProcess, PRIORITY_TRANSPORT, 0, PROTO_BIT__TCP | PROTO_BIT__UDP);
 #ifdef PERF_PROFILING
     _dpd.addPreprocProfileFunc("modsecurity", (void *) &modsecurityPerfStats, 0, _dpd.totalPerfStats, NULL);
 #endif
@@ -123,7 +123,7 @@ static modsecurity_config_t *ModsecurityParse(char *args)
 {
     char *arg;
     //char *argEnd;
-    uint8_t port;
+    uint8_t port = 0;
     modsecurity_config_t *config = (modsecurity_config_t *) calloc(1, sizeof(modsecurity_config_t));
 
     if (config == NULL)
@@ -150,7 +150,7 @@ static modsecurity_config_t *ModsecurityParse(char *args)
     return config;
 }
 
-void ModsecurityProcess(void *pkt, void *context)
+static void ModsecurityProcess(void *pkt, void *context)
 {
     SFSnortPacket *packet = (SFSnortPacket *) pkt;
     modsecurity_config_t *config;
@@ -232,7 +232,7 @@ static void ModsecurityReloadSwapFree(void *data)
 {
     tSfPolicyUserContextId config = (tSfPolicyUserContextId) data;
 
-    if (data == NULL) return NULL;
+    if (data == NULL) return;
 
     //sfPolicyUserDataFreeIterate(config, ModsecurityReloadSwap);
     sfPolicyConfigDelete(config);
