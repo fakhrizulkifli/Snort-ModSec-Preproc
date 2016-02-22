@@ -14,7 +14,7 @@ extern DynamicPreprocessorData _dpd;
 /* Preprocessor configuration */
 typedef struct _modsecurity_config
 {
-    uint8_t ports;
+    int ports;
 } modsecurity_config_t;
 
 #define MODSECURITY_SUCCESS 1

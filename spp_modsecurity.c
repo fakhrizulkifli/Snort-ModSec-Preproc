@@ -123,22 +123,24 @@ static modsecurity_config_t *ModsecurityParse(char *args)
 {
     char *arg;
     //char *argEnd;
-    uint8_t port = 0;
+    int port = 0;
     modsecurity_config_t *config = (modsecurity_config_t *) calloc(1, sizeof(modsecurity_config_t));
 
     if (config == NULL)
         _dpd.fatalMsg("Could not allocate configuration struct.\n");
 
-    arg = strtok(args, "\t\n\r");
+    arg = strtok(args, " ");
+
     if (arg && !strcasecmp("port", arg))
     {
-        arg = strtok(NULL, "\t\n\r");
+        arg = strtok(NULL, " ");
+        port = atoi(arg);
         if (!arg)
         {
             _dpd.fatalMsg("Modsecurity: Missing port\n");
         }
 
-        config->ports = (uint8_t) port;
+        config->ports = port;
 
         _dpd.logMsg("   Port: %d\n", config->ports);
     }
