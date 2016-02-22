@@ -54,10 +54,10 @@
 PreprocStats modsecurityPerfStats;
 #endif
 
-const int MAJOR_VERSION = 0;
-const int MINOR_VERSION = 1;
-const int BUILD_VERSION = 1;
-const char *PREPROC_NAME = "SF_MODSECURITY";
+/* const int MAJOR_VERSION = 0; */
+/* const int MINOR_VERSION = 1; */
+/* const int BUILD_VERSION = 1; */
+/* const char *PREPROC_NAME = "SF_MODSECURITY"; */
 
 #define SetupModsecurity DYNAMIC_PREPROC_SETUP
 

@@ -18,6 +18,8 @@ sf_dynamic_preproc_lib.c \
 sfPolicyUserData.c
 
 libsf_modsecurity_preproc_la_SOURCES = \
+sf_dynamic_preproc_lib.c \
+sfPolicyUserData.c \
 spp_modsecurity.c \
 spp_modsecurity.h
 

@@ -6,6 +6,7 @@
 #include "sfPolicyUserData.h"
 
 #define MAX_PORTS 65536
+extern DynamicPreprocessorData _dpd;
 
 /* NOTE: Snort can't strip ssl */
 #define MODSECURITY_PORT 80
