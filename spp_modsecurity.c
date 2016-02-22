@@ -104,7 +104,7 @@ static void ModsecurityInit(struct _SnortConfig *sc, char *args)
     {
         modsecurity_context_id = sfPolicyConfigCreate();
         if (modsecurity_context_id == NULL)
-            _dpd.fatalMsg("Could not allocate configuration struct.\n");
+            DynamicPreprocessorFatalMessage("Could not allocate configuration struct.\n");
     }
 
     config = ModsecurityParse(args);
@@ -127,17 +127,27 @@ static modsecurity_config_t *ModsecurityParse(char *args)
     modsecurity_config_t *config = (modsecurity_config_t *) calloc(1, sizeof(modsecurity_config_t));
 
     if (config == NULL)
-        _dpd.fatalMsg("Could not allocate configuration struct.\n");
+        DynamicPreprocessorFatalMessage("Could not allocate configuration struct.\n");
 
+    config->ports = 80;
     arg = strtok(args, " ");
 
     if (arg && !strcasecmp("port", arg))
     {
         arg = strtok(NULL, " ");
-        port = atoi(arg);
+
         if (!arg)
         {
-            _dpd.fatalMsg("Modsecurity: Missing port\n");
+            port = 80;
+            _dpd.logMsg("Undefined port, using default port.\n");
+            //DynamicPreprocessorFatalMessage("Modsecurity: Missing port\n");
+        }
+
+        port = atoi(arg);
+
+        if (port < 0 || port > MAX_PORTS)
+        {
+            DynamicPreprocessorFatalMessage("Bad port %d.\n", port);
         }
 
         config->ports = port;
@@ -146,7 +156,8 @@ static modsecurity_config_t *ModsecurityParse(char *args)
     }
     else
     {
-        _dpd.fatalMsg("Modsecurity: Invalid option %s\n", arg ? arg : "(missing port)");
+        _dpd.logMsg("   Port: %d\n", config->ports);
+        //DynamicPreprocessorFatalMessage("Modsecurity: Invalid option %s\n", arg ? arg : "(missing port)");
     }
 
     return config;
@@ -169,7 +180,7 @@ static void ModsecurityProcess(void *pkt, void *context)
     if (packet->src_port == config->ports)
     {
         /* Check source port */
-        DynamicPreprocessorFatalMessage("Modsecurity Src Port Found: %d\n", packet->src_port);
+        _dpd.logMsg("Modsecurity Src Port Found: %d\n", packet->src_port);
 
         PREPROC_PROFILE_END(modsecurityPerfStats);
         return;
@@ -177,7 +188,7 @@ static void ModsecurityProcess(void *pkt, void *context)
 
     if (packet->dst_port == config->ports)
     {
-        DynamicPreprocessorFatalMessage("Modsecurity Dst Port Found: %d\n", packet->dst_port);
+        _dpd.logMsg("Modsecurity Dst Port Found: %d\n", packet->dst_port);
 
         PREPROC_PROFILE_END(modsecurityPerfStats);
         return;
@@ -198,7 +209,7 @@ static void ModsecurityReload(struct _SnortConfig *sc, char *args, void **new_co
     modsecurity_swap_config = sfPolicyConfigCreate();
 
     if (modsecurity_swap_config == NULL)
-        _dpd.fatalMsg("Could not allocate configuration struct\n");
+        DynamicPreprocessorFatalMessage("Could not allocate configuration struct\n");
 
     config = ModsecurityParse(args);
     sfPolicyUserPolicySet(modsecurity_swap_config, policy_id);
