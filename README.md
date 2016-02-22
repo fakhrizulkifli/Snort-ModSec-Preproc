@@ -15,7 +15,7 @@ $ sudo snort -c snort.conf
 
 #### License
 
-BSDv3 License. Copyright (c) 2016 Fakhri Zulkifli. See [License](https://github.com/d0lph1n98/Snort-ModSec-CRS-Parser/blob/master/LICENSE).
+BSDv3 License. Copyright (c) 2016 Fakhri Zulkifli. See [License](https://github.com/d0lph1n98/Snort-ModSec-Preproc/blob/master/LICENSE).
 
 #### Contact
 
