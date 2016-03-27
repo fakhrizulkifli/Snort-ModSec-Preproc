@@ -43,6 +43,7 @@
 
 #include "sf_types.h"
 #include "sf_snort_packet.h"
+#include "stream_api.h"
 #include "sf_dynamic_preprocessor.h"
 #include "snort_debug.h"
 #include "preprocids.h"
@@ -171,6 +172,8 @@ static void ModsecurityProcess(void *pkt, void *context)
 
     sfPolicyUserPolicySet(modsecurity_context_id, _dpd.getNapRuntimePolicy());
     config = (modsecurity_config_t *) sfPolicyUserDataGetCurrent(modsecurity_context_id);
+
+    if(!IsTCP(packet)) return;
 
     if (config == NULL)
         return;

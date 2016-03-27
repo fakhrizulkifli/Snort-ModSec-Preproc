@@ -1,7 +1,7 @@
 #### Modsecurity Dynamic Preprocessor for Snort v2.x
 A Proof-of-Concept project started to turn ModSecurity into sniffer mode and with Snort Inline capability to drop packet once the packet matches with the attack signatures.
 
-###### Warning: Under active development, currently unstable version.
+###### Status: Discontinued, GSoC 2016. However, this repo can be use as boilerplate for simple Snort + Modsecurity preprocessor.
 
 #### Installation
 The installation procedure is the usual one:
@@ -10,7 +10,7 @@ $ sudo snort -c snort.conf
 ```
 
 #### TODO:
-1. Utilize libmodsecurity.
+1. Utilize libmodsecurity (Modsecurity-Pcap Connector).
 2. Logging (e.g /var/log/snort/modsecurity.log).
 
 #### License
