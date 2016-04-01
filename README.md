@@ -10,7 +10,7 @@ $ sudo snort -c snort.conf
 ```
 
 #### TODO:
-1. Utilize libmodsecurity (Modsecurity-Pcap Connector).
+1. Utilize libmodsecurity ([Modsecurity-Pcap Connector](https://github.com/SpiderLabs/ModSecurity-pcap)).
 2. Logging (e.g /var/log/snort/modsecurity.log).
 
 #### License
